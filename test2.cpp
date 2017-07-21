@@ -17,8 +17,8 @@ using namespace std;
 
 //Declaring Functions
 void GetCoeff(int eqCoeff[], int size);
-void CalcRoots(int eqCoeff[], double& root1, double& root2, int& imagine);
-void PrintRoots(int eqCoeff[], double root1, double root2, int imagine);
+void CalcRoots(int eqCoeff[], double& root1, double& root2, int& imagine, double& img1);
+void PrintRoots(int eqCoeff[], double root1, double root2, int imagine, double& img1);
 
 //Declaring the size of the array
 const int ARRAY_SIZE = 3;
@@ -27,12 +27,13 @@ int main(){
 
     //Initializing and declaring variables
     int eqCoeff[ARRAY_SIZE] = {0};
-    string yesOrNo = ""; 
+    string yesOrNo; 
     double root1 = 0;
     double root2 = 0;
+    double img1 = 0;
     
     //Sets imagine to false
-    int imagine = 0;
+    bool imagine = false;
    
     do{
 
@@ -40,10 +41,10 @@ int main(){
         GetCoeff(eqCoeff, ARRAY_SIZE);
 
         //Calculates roots based on given coefficients
-        CalcRoots(eqCoeff, root1, root2, imagine);
+        CalcRoots(eqCoeff, root1, root2, imagine, img1);
 
         //Prints the roots to terminal
-        PrintRoots(eqCoeff, root1, root2, imagine);
+        PrintRoots(eqCoeff, root1, root2, imagine, img1);
         
         //Resets imaginary to false
         imagine = 0;
@@ -55,7 +56,6 @@ int main(){
     }
     //Loop continues until the user inputs N
     while(yesOrNo != "N");
-    return 0;
 }
 
 void GetCoeff(int eqCoeff[], int size){
@@ -70,15 +70,14 @@ void GetCoeff(int eqCoeff[], int size){
 
     cout << endl << "Your provided equation is " << eqCoeff[0] << "x^2 + ";
     cout << eqCoeff[1] << "x + " << eqCoeff[2] << endl; 
-    return;
 }
 
-void CalcRoots(int eqCoeff[], double& root1, double& root2, int& imagine){
+void CalcRoots(int eqCoeff[], double& root1, double& root2, bool& imagine, double& img1){
 
     //Casts userInput as floats
-    double a = static_cast<double>(eqCoeff[0]);
-    double b = static_cast<double>(eqCoeff[1]);
-    double c = static_cast<double>(eqCoeff[2]);
+    double a = eqCoeff[0];
+    double b = eqCoeff[1];
+    double c = eqCoeff[2];
 
     //Calculates value beneath the square root
     double squareRoot = pow(b,2) - (4 * a * c);
@@ -86,26 +85,26 @@ void CalcRoots(int eqCoeff[], double& root1, double& root2, int& imagine){
     if (squareRoot < 0){
         //if value beneath square root is negative is is made positive
         squareRoot = -squareRoot;
+        root1 = (-b)/(2 * a);
+        img1 =  sqrt(squareRoot))/(2 * a)
         //if value beneath square root is negative imagine becomes true
-            imagine = 1;
+            imagine = true;
     }
 
     if (a == 0 && b == 0){
         if (c < 0){
-            imagine = 1;
+            imagine = true;
             c = -c;
         }
-        root1 = sqrt(c);
-        return;
+    root1 = sqrt(c);
+    return;
     } 
     //Calculates the roots of the equation
     root1 = (-b + sqrt(squareRoot))/(2 * a);
     root2 = (-b - sqrt(squareRoot))/(2 * a);
-
-    return;
 }
 
-void PrintRoots(int eqCoeff[], double root1, double root2, int imagine){
+void PrintRoots(int eqCoeff[], double root1, double root2, bool imagine, double& img1){
 
     //Checks if equation has a single root
     if (eqCoeff[0] == 0 && eqCoeff[1] == 0){
@@ -119,8 +118,8 @@ void PrintRoots(int eqCoeff[], double root1, double root2, int imagine){
     }
     //Checks if roots are imaginary    
     else if (imagine == 1){
-        cout << "Your solutions are the imaginary numbers" << root1 << "i and ";
-        cout << root2 << "i\n" << endl;
+        cout << "Your solutions are " << root1 << " + << img1 << "i and ";
+        cout << root2 << " + " << -img1 << "i\n" << endl;
     }
     //Solution of eq OrdofMag = 1
     if (eqCoeff[0] == 0 && eqCoeff[1] != 0){

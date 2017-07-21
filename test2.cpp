@@ -110,27 +110,27 @@ void PrintRoots(int eqCoeff[], double root1, double root2, int imagine){
     //Checks if equation has a single root
     if (eqCoeff[0] == 0 && eqCoeff[1] == 0){
         if (imagine == 1){
-            cout << "Your equation has an imaginary root of " << root1 << "i"; 
+            cout << "Your equation has an imaginary solution of " << root1 << "i"; 
             cout << endl << endl;
             return;
         }
-        cout << "Your equation has a single real root of " << root1 << endl;
+        cout << "Your equation has a single real solution of " << root1 << endl;
         cout << endl;
     }
     //Checks if roots are imaginary    
     else if (imagine == 1){
-        cout << "Your roots are the imaginary numbers" << root1 << "i and ";
+        cout << "Your solutions are the imaginary numbers" << root1 << "i and ";
         cout << root2 << "i\n" << endl;
     }
     //Solution of eq OrdofMag = 1
     if (eqCoeff[0] == 0 && eqCoeff[1] != 0){
         double solution = 0;
         solution = -eqCoeff[2]/eqCoeff[1];
-        cout << "The solution of your equation is x = " << solution << endl;
+        cout << "Your solution is " << solution << endl;
     }
     //TODO:Write code for finding complex roots
     else{
-        cout << "Your roots are real numbers" << root1 << " and " << root2;
+        cout << "Your solutions are real numbers" << root1 << " and " << root2;
         cout << endl << endl; 
     }
     return;

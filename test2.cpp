@@ -121,7 +121,15 @@ void PrintRoots(int eqCoeff[], double root1, double root2, int imagine){
     else if (imagine == 1){
         cout << "Your roots are the imaginary numbers" << root1 << "i and ";
         cout << root2 << "i\n" << endl;
-    }else{
+    }
+    //Solution of eq OrdofMag = 1
+    if (eqCoeff[0] == 0 && eqCoeff[1] != 0){
+        double solution = 0;
+        solution = -eqCoeff[2]/eqCoeff[1];
+        cout << "The solution of your equation is x = " << solution << endl;
+    }
+    //TODO:Write code for finding complex roots
+    else{
         cout << "Your roots are real numbers" << root1 << " and " << root2;
         cout << endl << endl; 
     }

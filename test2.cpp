@@ -90,7 +90,7 @@ void CalcRoots(int eqCoeff[], double& root1, double& root2, int& imagine){
             imagine = 1;
     }
 
-    if (a == 0 & b == 0){
+    if (a == 0 && b == 0){
         if (c < 0){
             imagine = 1;
             c = -c;

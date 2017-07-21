@@ -125,7 +125,7 @@ void PrintRoots(int eqCoeff[], double root1, double root2, int imagine){
     //Solution of eq OrdofMag = 1
     if (eqCoeff[0] == 0 && eqCoeff[1] != 0){
         double solution = 0;
-        solution = -eqCoeff[2]/eqCoeff[1];
+        solution = -static_cast<double>(eqCoeff[2])/static_cast<double>(eqCoeff[1]);
         cout << "Your solution is " << solution << endl;
     }
     //TODO:Write code for finding complex roots

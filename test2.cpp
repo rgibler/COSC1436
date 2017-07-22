@@ -17,8 +17,8 @@ using namespace std;
 
 //Declaring Functions
 void GetCoeff(int eqCoeff[], int size);
-void CalcRoots(int eqCoeff[], double& root1, double& root2, int& imagine, double& img1);
-void PrintRoots(int eqCoeff[], double root1, double root2, int imagine, double& img1);
+void CalcRoots(int eqCoeff[], double& root1, double& root2, bool& imagine, double& imagComp);
+void PrintRoots(int eqCoeff[], double root1, double root2, bool imagine, double imagComp);
 
 //Declaring the size of the array
 const int ARRAY_SIZE = 3;
@@ -27,10 +27,10 @@ int main(){
 
     //Initializing and declaring variables
     int eqCoeff[ARRAY_SIZE] = {0};
-    string yesOrNo; 
+    string yesOrNo = ""; 
     double root1 = 0;
     double root2 = 0;
-    double img1 = 0;
+    double imagComp = 0.0;
     
     //Sets imagine to false
     bool imagine = false;
@@ -41,21 +41,25 @@ int main(){
         GetCoeff(eqCoeff, ARRAY_SIZE);
 
         //Calculates roots based on given coefficients
-        CalcRoots(eqCoeff, root1, root2, imagine, img1);
+        CalcRoots(eqCoeff, root1, root2, imagine, imagComp);
 
         //Prints the roots to terminal
-        PrintRoots(eqCoeff, root1, root2, imagine, img1);
+        PrintRoots(eqCoeff, root1, root2, imagine, imagComp);
         
         //Resets imaginary to false
-        imagine = 0;
+        imagine = false;
 
         //Inputs a new condition for the while statement
         cout << "Would you like to try again? (Y or N): ";
         cin >> yesOrNo; 
-     
+        while (yesOrNo != "N" && yesOrNo != "Y"){
+            cout << "Please enter either Y or N: ";
+            cin >> yesOrNo;
+        }
     }
     //Loop continues until the user inputs N
     while(yesOrNo != "N");
+    return 0;
 }
 
 void GetCoeff(int eqCoeff[], int size){
@@ -72,7 +76,7 @@ void GetCoeff(int eqCoeff[], int size){
     cout << eqCoeff[1] << "x + " << eqCoeff[2] << endl; 
 }
 
-void CalcRoots(int eqCoeff[], double& root1, double& root2, bool& imagine, double& img1){
+void CalcRoots(int eqCoeff[], double& root1, double& root2, bool& imagine, double& imagComp){
 
     //Casts userInput as floats
     double a = eqCoeff[0];
@@ -85,10 +89,14 @@ void CalcRoots(int eqCoeff[], double& root1, double& root2, bool& imagine, doubl
     if (squareRoot < 0){
         //if value beneath square root is negative is is made positive
         squareRoot = -squareRoot;
+        //Solves for real component
         root1 = (-b)/(2 * a);
-        img1 =  sqrt(squareRoot))/(2 * a)
+        root2 = root1;
+        //Solves for imaginary component
+        imagComp =  sqrt(squareRoot)/(2 * a);
         //if value beneath square root is negative imagine becomes true
-            imagine = true;
+        imagine = true;
+        return;
     }
 
     if (a == 0 && b == 0){
@@ -96,40 +104,40 @@ void CalcRoots(int eqCoeff[], double& root1, double& root2, bool& imagine, doubl
             imagine = true;
             c = -c;
         }
-    root1 = sqrt(c);
-    return;
+        root1 = sqrt(c);
+        return;
     } 
     //Calculates the roots of the equation
     root1 = (-b + sqrt(squareRoot))/(2 * a);
     root2 = (-b - sqrt(squareRoot))/(2 * a);
 }
 
-void PrintRoots(int eqCoeff[], double root1, double root2, bool imagine, double& img1){
+void PrintRoots(int eqCoeff[], double root1, double root2, bool imagine, double imagComp){
 
+    //Checks equations validity
+    if ((eqCoeff[0] == 0 && eqCoeff[1] == 0) && eqCoeff[2] != 0){
+        cout << "!!!Error!!! " << eqCoeff[2] << " does not equal 0!\n";
+        return;
+    } 
     //Checks if equation has a single root
-    if (eqCoeff[0] == 0 && eqCoeff[1] == 0){
-        if (imagine == 1){
-            cout << "Your equation has an imaginary solution of " << root1 << "i"; 
-            cout << endl << endl;
-            return;
-        }
+    else if (eqCoeff[0] == 0 && eqCoeff[1] == 0){
         cout << "Your equation has a single real solution of " << root1 << endl;
         cout << endl;
     }
     //Checks if roots are imaginary    
-    else if (imagine == 1){
-        cout << "Your solutions are " << root1 << " + << img1 << "i and ";
-        cout << root2 << " + " << -img1 << "i\n" << endl;
+    else if (imagine == true){
+        cout << "Your solutions are " << root1 << " + " << imagComp << "i and ";
+        cout << root2 << " + " << -imagComp << "i\n" << endl;
     }
     //Solution of eq OrdofMag = 1
-    if (eqCoeff[0] == 0 && eqCoeff[1] != 0){
+    else if (eqCoeff[0] == 0 && eqCoeff[1] != 0){
         double solution = 0;
         solution = -static_cast<double>(eqCoeff[2])/static_cast<double>(eqCoeff[1]);
         cout << "Your solution is " << solution << endl;
+        return;
     }
-    //TODO:Write code for finding complex roots
     else{
-        cout << "Your solutions are real numbers" << root1 << " and " << root2;
+        cout << "Your solutions are real numbers " << root1 << " and " << root2;
         cout << endl << endl; 
     }
     return;

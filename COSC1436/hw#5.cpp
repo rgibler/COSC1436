@@ -24,19 +24,19 @@ int main(){
     string yesOrNo = "";
 
     //Scanning in necessary data
-    cout << "Enter the rent per month when all units are occupied: \n";
+    cout << "Enter the rent per month when all units are occupied: ";
     cin >> rentAllUnits;
     cout << "Default number of units is 50. Would you like to enter ";
-    cout << "a different number? (yes or no)\n";
+    cout << "a different number? (yes or no) ";
     cin >> yesOrNo;
     if (yesOrNo == "Yes" || yesOrNo == "yes"){ 
-        cout << "Enter total number of units in the apartment complex: \n";
+        cout << "Enter total number of units in the apartment complex: ";
         cin >> totUnits;
     }
     cout << "Enter the increase in rent which would result in a single";
-    cout << " vacancy: \n";
+    cout << " vacancy: ";
     cin >> increasePerVacant;
-    cout << "Enter the total cost of maintenance per occupied unit: \n";
+    cout << "Enter the total cost of maintenance per occupied unit: ";
     cin >> maintanence;
 
     //Delcaring max profit and index of max profit

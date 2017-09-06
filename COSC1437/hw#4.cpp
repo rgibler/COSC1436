@@ -96,7 +96,7 @@ int main(){
     cin >> usrCostPerLiter >> usrCostSqFt;
     while (usrCostPerLiter < 0 ||  usrCostSqFt < 0){
         cout << "!!!Invalid Input!! Costs must be positive values!\n";
-        cout << "Please re-enter the cost per square foot to paint the container: ";
+        cout << "Please re-enter the cost per per liter to ship and cost per square foot to paint the container: ";
         cin >> usrCostPerLiter >> usrCostSqFt;
     }
     cout << endl;

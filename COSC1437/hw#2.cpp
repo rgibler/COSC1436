@@ -8,7 +8,7 @@
 #include<string>
 using namespace std;
 
-int const NUM_STUDENTS = 2;
+int const NUM_STUDENTS = 20;
 
 //Defining my struct
 struct studentType{

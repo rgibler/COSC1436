@@ -5,7 +5,7 @@
 * different types of bank accounts.
 */
 
-
+#include <array>
 #include<iostream>
 #include<string>
 using namespace std;
@@ -23,9 +23,18 @@ class bankAccount{
         void SetName();
         void SetAccountNum();
         void SetBalance();
-        void PrintDetails();
+        //Creating Virtual functions
+        virtual void PrintDetails() const;
+        virtual void Setup();
         bankAccount();
 };
+
+void bankAccount::Setup(){
+    cout << "Setting up Bank Account...\n";
+    SetName();
+    SetAccountNum();
+    SetBalance();
+}    
 
 void bankAccount::SetName(){
     cout << "Enter a name for the account: ";
@@ -41,7 +50,7 @@ void bankAccount::SetBalance(){
     cin >> balance;
 }
 
-void bankAccount::PrintDetails(){
+void bankAccount::PrintDetails() const{
     cout << "The name on your account is " << name << endl;
     cout << "Your account number is " << accountNumber << endl;
     cout << "Your current balance is $" << balance << endl;
@@ -62,12 +71,22 @@ class checkingAccount : public bankAccount{
     public:
         void WriteCheck();
         checkingAccount();
-        void PrintDetails();
+        //Overwrites PrintDetails and Setups definition in root class
+        void PrintDetails() const override;
+        void Setup() override;
 };
 
-//I think I might be doing something weird with my virtual functions...
-//let me know if there are any glaring issues
-void checkingAccount::PrintDetails(){
+void checkingAccount::Setup(){
+    cout << "Setting up Checking Account...\n";
+    SetName();
+    SetAccountNum();
+    SetBalance();
+    cout << "Writing Check...\n";
+    WriteCheck();
+    PrintDetails();
+}
+
+void checkingAccount::PrintDetails() const{
     cout << "The name on your account is " << name << endl;
     cout << "Your account number is " << accountNumber << endl;
     cout << "Your current balance is $" << balance << endl;
@@ -102,7 +121,25 @@ class serviceChargeChecking : public checkingAccount{
     public:
         void SetServiceCharge();
         serviceChargeChecking();
+        void PrintDetails() const override;
+        void Setup() override;
 };
+
+void serviceChargeChecking::PrintDetails() const{
+    cout << "The name on your account is " << name << endl;
+    cout << "Your account number is " << accountNumber << endl;
+    cout << "Your current balance is $" << balance << endl;
+    cout << "Your service charge is $" << serviceCharge << endl;
+}
+
+
+void serviceChargeChecking::Setup(){
+    cout << "Setting up Service Charge Checking Account...\n";
+    SetName();
+    SetAccountNum();
+    SetBalance();
+    SetServiceCharge();
+}  
 
 void serviceChargeChecking::SetServiceCharge(){
     cout << "Enter value for service charge (float): ";
@@ -121,8 +158,28 @@ class noServiceChargeChecking : public checkingAccount{
         void SetInterest();
         void SetMinBalance();
         void SetBalance();
+        void Setup() override;
+        void PrintDetails() const override;
         noServiceChargeChecking();
 };
+
+void noServiceChargeChecking::PrintDetails() const{
+    cout << "The name on your account is " << name << endl;
+    cout << "Your account number is " << accountNumber << endl;
+    cout << "Your minimum balance is set to $" << minBalance << endl;
+    cout << "Your interest rate is set to " << interest << endl;
+    cout << "Your current balance is $" << balance << endl;
+}
+
+
+void noServiceChargeChecking::Setup(){
+    cout << "Setting up No Service Change Checking Account...\n";
+    SetName();
+    SetAccountNum();
+    SetInterest();
+    SetMinBalance();
+    SetBalance();
+}  
 
 void noServiceChargeChecking::SetInterest(){
     cout << "Please enter a value for your interest rate: ";
@@ -158,8 +215,18 @@ class highInterestChecking : public noServiceChargeChecking{
     public:
         void SetInterest();
         void SetMinBalance();
+        void Setup() override;
         highInterestChecking();
 };
+
+void highInterestChecking::Setup(){
+    cout << "Setting up High Interest Checking Account...\n";
+    SetName();
+    SetAccountNum();
+    SetInterest();
+    SetMinBalance();
+    SetBalance();
+}
 
 
 void highInterestChecking::SetInterest(){
@@ -198,8 +265,27 @@ class savingsAccount : public bankAccount{
         double interest;
     public:
         void SetInterest();
+        void Setup() override;
+        void PrintDetails() const override;
         savingsAccount();
 };
+
+void savingsAccount::PrintDetails() const{
+    cout << "The name on your account is " << name << endl;
+    cout << "Your account number is " << accountNumber << endl;
+    cout << "Your interest rate is set to " << interest << endl;
+    cout << "Your current balance is $" << balance << endl;
+}
+
+
+void savingsAccount::Setup(){
+    cout << "Setting up Savings Account...\n";
+    SetName();
+    SetAccountNum();
+    SetInterest();
+    SetBalance();
+}
+
 
 void savingsAccount::SetInterest(){
     cout << "Enter an interest rate for this account: ";
@@ -218,8 +304,29 @@ class highInterestSavings : public savingsAccount{
         void SetMinBalance();
         void SetBalance();
         void SetInterest();
+        void PrintDetails() const override;
+        void Setup() override;
         highInterestSavings();
 };
+
+void highInterestSavings::PrintDetails() const{
+    cout << "The name on your account is " << name << endl;
+    cout << "Your account number is " << accountNumber << endl;
+    cout << "Your interest rate is set to " << hiInterest << endl;
+    cout << "Your minimum balance is set to $" << minBalance << endl;
+    cout << "Your current balance is $" << balance << endl;
+}
+
+
+void highInterestSavings::Setup(){
+    cout << "Setting up High Interest Savings Account...\n";
+    SetName();
+    SetAccountNum();
+    SetInterest();
+    SetMinBalance();
+    SetBalance();
+}
+
 
 highInterestSavings::highInterestSavings(){
     minBalance = 0;
@@ -262,11 +369,23 @@ class certificateOfDeposit : public bankAccount{
         void SetInterest();
         void SetCurrentMonth();
         void SetMonthsOfMaturity();
-        void PrintDetails();
+        void Setup() override;
+        void PrintDetails() const override;
         certificateOfDeposit();
 };
 
-void certificateOfDeposit::PrintDetails(){
+void certificateOfDeposit::Setup(){
+    cout << "Setting up Certificate of Deposit...\n";
+    SetName();
+    SetAccountNum();
+    SetBalance();
+    SetInterest();
+    SetCurrentMonth();
+    SetMonthsOfMaturity();
+}
+
+
+void certificateOfDeposit::PrintDetails() const{
     cout << "Interest is " << interest << endl;
     cout << "Current month is " << currentMonth << endl;
     cout << "Months of maturity is " << monthsOfMaturity << endl;
@@ -297,76 +416,22 @@ void certificateOfDeposit::SetMonthsOfMaturity(){
     cin >> monthsOfMaturity;
 }
 
-//Test function prototypes
-void TestBankAccount();
-void TestCheckingAccount();
-void TestHighInterestChecking();
-void TestCertificateOfDeposit();
-void TestHighInterestSavings();
-
 int main(){
+    //Declaring test variables of different classes
+    bankAccount b1;
+    checkingAccount b2;
+    highInterestChecking b3;
+    highInterestSavings b4;
+    certificateOfDeposit b5;
 
-    TestBankAccount();
-    TestCheckingAccount();
-    TestHighInterestChecking();
-    TestHighInterestSavings();
-    TestCertificateOfDeposit();
+    //creates an array of pointers which point to addresses of the test variables
+    array<bankAccount*, 5> accounts { &b1, &b2, &b3, &b4, &b5};
+    //loops through array and points to specific functions facilitates use of virtual functions
+    for (bankAccount* account : accounts) {
+        //accesses member functions of account
+        account->Setup();
+        account->PrintDetails();
+        cout << endl; 
+    }
 }
 
-void TestBankAccount(){
-    bankAccount testBank;
-    cout << "***Testing Bank Account Class***\n";
-    testBank.SetName();
-    testBank.SetAccountNum();
-    testBank.SetBalance();
-    testBank.PrintDetails();
-    cout << endl;
-}
-
-void TestCheckingAccount(){
-    checkingAccount testChecking;
-    cout << "***Testing Checking Account Class***\n";
-    testChecking.SetName();
-    testChecking.SetAccountNum();
-    testChecking.SetBalance();
-    testChecking.WriteCheck();
-    testChecking.PrintDetails();
-    cout << endl;
-}
-
-void TestHighInterestChecking(){
-    highInterestChecking testHighInterest;
-    cout << "***Testing High Interest Checking Account***\n";
-    testHighInterest.SetName();
-    testHighInterest.SetAccountNum();
-    testHighInterest.SetMinBalance();
-    testHighInterest.SetBalance();
-    testHighInterest.WriteCheck();
-    testHighInterest.PrintDetails();
-    cout << endl;
-}
-
-void TestHighInterestSavings(){
-    highInterestSavings testHiSavings;
-    cout << "***Testing High Interest Savings***\n";
-    testHiSavings.SetName();
-    testHiSavings.SetAccountNum();
-    testHiSavings.SetMinBalance();
-    testHiSavings.SetBalance();
-    testHiSavings.SetInterest();
-    testHiSavings.PrintDetails();
-    cout << endl;
-}
-
-void TestCertificateOfDeposit(){
-    certificateOfDeposit testCert;
-    cout << "***Testing Certificate of Deposit***\n";
-    testCert.SetName();
-    testCert.SetAccountNum();
-    testCert.SetBalance();
-    testCert.SetInterest();
-    testCert.SetCurrentMonth();
-    testCert.SetMonthsOfMaturity();
-    testCert.PrintDetails();
-    cout << endl;
-}

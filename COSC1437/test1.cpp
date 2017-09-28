@@ -1,5 +1,6 @@
 /*Robert Gibler COSC1437 9/24/2017
 *
+*
 * This program is an attempt to solve the problem posed for the programming
 * portion of test1. In this program a tree of inheritance is created for a variety of
 * different types of bank accounts.
@@ -14,105 +15,34 @@ using namespace std;
 const int CHECK_LIMIT = 3;
 
 //Base class
+//Needs to be purely abstract
 class bankAccount{
     protected:
         string name;
         int accountNumber;
         double balance;
     public:
-        void SetName();
-        void SetAccountNum();
-        void SetBalance();
-        //Creating Virtual functions
-        virtual void PrintDetails() const;
-        virtual void Setup();
-        bankAccount();
+        virtual void SetName() = 0;
+        virtual void SetAccountNum() = 0;
+        virtual void SetBalance() = 0;
+        virtual void Deposit() = 0;
+        virtual void Withdraw() = 0;
+        virtual void PrintDetails() = 0;
+        virtual void Setup() = 0;
 };
 
-void bankAccount::Setup(){
-    cout << "Setting up Bank Account...\n";
-    SetName();
-    SetAccountNum();
-    SetBalance();
-}    
-
-void bankAccount::SetName(){
-    cout << "Enter a name for the account: ";
-    cin >> name;
-}
-
-void bankAccount::SetAccountNum(){
-    cout << "Enter a number for the account: ";
-    cin >> accountNumber;
-}
-void bankAccount::SetBalance(){
-    cout << "Enter a balance for the Account: ";
-    cin >> balance;
-}
-
-void bankAccount::PrintDetails() const{
-    cout << "The name on your account is " << name << endl;
-    cout << "Your account number is " << accountNumber << endl;
-    cout << "Your current balance is $" << balance << endl;
-}
-
-bankAccount::bankAccount(){
-    name = "";
-    accountNumber = 0;
-    balance = 0;    
-}
 
 //Derived class a type of bank account
+//Also needs to be purely abstract
 class checkingAccount : public bankAccount{
     protected:
         string personReceiving;
         double amountSent;
         int checksWritten;
     public:
-        void WriteCheck();
-        checkingAccount();
-        //Overwrites PrintDetails and Setups definition in root class
-        void PrintDetails() const override;
-        void Setup() override;
+        virtual void WriteCheck() = 0;
 };
 
-void checkingAccount::Setup(){
-    cout << "Setting up Checking Account...\n";
-    SetName();
-    SetAccountNum();
-    SetBalance();
-    cout << "Writing Check...\n";
-    WriteCheck();
-    PrintDetails();
-}
-
-void checkingAccount::PrintDetails() const{
-    cout << "The name on your account is " << name << endl;
-    cout << "Your account number is " << accountNumber << endl;
-    cout << "Your current balance is $" << balance << endl;
-    cout << "The person receiving the check is " << personReceiving << endl;
-    cout << "The amount sent was $" << amountSent << endl;
-}
-
-void checkingAccount::WriteCheck(){
-    cout << "***** Writing out Check*****\n";
-    if (checksWritten <= CHECK_LIMIT){
-        cout << "Enter name of person the check is for: ";
-        cin >> personReceiving;
-        cout << "Enter amount to be sent: ";
-        cin >> amountSent;
-        checksWritten++;
-    }
-    else{
-        cout << "!!Error!! Maximum number of checks for this month reached!";
-    }
-}
-
-checkingAccount::checkingAccount(){
-    personReceiving = "";
-    amountSent = 0;
-    checksWritten = 0;
-}
 
 //inherits checking account members
 class serviceChargeChecking : public checkingAccount{
@@ -121,11 +51,48 @@ class serviceChargeChecking : public checkingAccount{
     public:
         void SetServiceCharge();
         serviceChargeChecking();
-        void PrintDetails() const override;
-        void Setup() override;
+        void SetName() override;
+        void SetAccountNum() override;
+        void SetBalance() override;
+        void Deposit() override;
+        void Withdraw() override;
+        void WriteCheck() override;
+        void PrintDetails();
+        void Setup();
 };
 
-void serviceChargeChecking::PrintDetails() const{
+void serviceChargeChecking::SetName(){
+    cout << "Enter a name for the account: ";
+    cin >> name;
+}
+
+void serviceChargeChecking::SetAccountNum(){
+    cout << "Enter a number for the account: ";
+    cin >> accountNumber;
+}
+
+void serviceChargeChecking::SetBalance(){
+    cout << "Enter a balance for the Account: ";
+    cin >> balance;
+}
+
+void serviceChargeChecking::Deposit(){
+    double money;
+    cout << "Enter amount to be deposited into account: $";
+    cin >> money;
+    balance += money;
+    cout << "New account balance is $" << balance << endl;
+}
+
+void serviceChargeChecking::Withdraw(){
+    double money;
+    cout << "Enter amount to be withdrawn: $";
+    cin >> money;
+    balance -= money;
+    cout << "New Balance is $" << balance << endl;
+}
+
+void serviceChargeChecking::PrintDetails(){
     cout << "The name on your account is " << name << endl;
     cout << "Your account number is " << accountNumber << endl;
     cout << "Your current balance is $" << balance << endl;
@@ -146,6 +113,21 @@ void serviceChargeChecking::SetServiceCharge(){
     cin >> serviceCharge;
 }
 
+void serviceChargeChecking::WriteCheck(){
+    cout << "***** Writing out Check*****\n";
+    if (checksWritten <= CHECK_LIMIT){
+        cout << "Enter name of person the check is for: ";
+        cin >> personReceiving;
+        cout << "Enter amount to be sent: ";
+        cin >> amountSent;
+        checksWritten++;
+    }
+    else{
+        cout << "!!Error!! Maximum number of checks for this month reached!";
+    }
+}
+
+
 serviceChargeChecking::serviceChargeChecking(){
     serviceCharge = 0;
 }
@@ -155,15 +137,57 @@ class noServiceChargeChecking : public checkingAccount{
         double interest;
         double minBalance;
     public:
+        void SetName() override;
+        void SetAccountNum() override;
         void SetInterest();
         void SetMinBalance();
-        void SetBalance();
+        void Deposit() override;
+        void Withdraw() override;
+        void SetBalance() override;
+        void WriteCheck() override;
         void Setup() override;
-        void PrintDetails() const override;
+        void PrintDetails();
         noServiceChargeChecking();
 };
 
-void noServiceChargeChecking::PrintDetails() const{
+void noServiceChargeChecking::SetName(){
+    cout << "Enter a name for the account: ";
+    cin >> name;
+}
+
+void noServiceChargeChecking::SetAccountNum(){
+    cout << "Enter a number for the account: ";
+    cin >> accountNumber;
+}
+
+void noServiceChargeChecking::Deposit(){
+    double money;
+    cout << "Enter amount to be deposited into account: $";
+    cin >> money;
+    balance += money;
+    cout << "New account balance is $" << balance << endl;
+}
+
+void noServiceChargeChecking::Withdraw(){
+    double money;
+    cout << "Enter amount to be withdrawn: $"; 
+    cin >> money;
+    balance -= money;
+    cout << "New Balance is $" << balance << endl;
+}
+
+
+void noServiceChargeChecking::WriteCheck(){
+    cout << "***** Writing out Check*****\n";
+        cout << "Enter name of person the check is for: ";
+        cin >> personReceiving;
+        cout << "Enter amount to be sent: ";
+        cin >> amountSent;
+        checksWritten++;
+}
+
+
+void noServiceChargeChecking::PrintDetails(){
     cout << "The name on your account is " << name << endl;
     cout << "Your account number is " << accountNumber << endl;
     cout << "Your minimum balance is set to $" << minBalance << endl;
@@ -264,13 +288,50 @@ class savingsAccount : public bankAccount{
     protected:
         double interest;
     public:
+        void SetName() override;
+        void SetAccountNum() override;
+        void SetBalance() override;
+        void Deposit() override;
+        void Withdraw() override;
         void SetInterest();
         void Setup() override;
-        void PrintDetails() const override;
+        void PrintDetails() override;
         savingsAccount();
 };
 
-void savingsAccount::PrintDetails() const{
+void savingsAccount::SetName(){
+    cout << "Enter a name for the account: ";
+    cin >> name;
+}
+
+void savingsAccount::SetAccountNum(){
+    cout << "Enter a number for the account: ";
+    cin >> accountNumber;
+}
+
+void savingsAccount::SetBalance(){
+    cout << "Enter a balance for the Account: ";
+    cin >> balance;
+}
+
+void savingsAccount::Deposit(){
+    double money;
+    cout << "Enter amount to be deposited into account: $";
+    cin >> money;
+    balance += money;
+    cout << "New account balance is $" << balance << endl;
+}
+
+void savingsAccount::Withdraw(){
+    double money;
+    cout << "Enter amount to be withdrawn: $"; 
+    cin >> money;
+    balance -= money;
+    cout << "New Balance is $" << balance << endl;
+}
+
+
+void savingsAccount::PrintDetails(){
     cout << "The name on your account is " << name << endl;
     cout << "Your account number is " << accountNumber << endl;
     cout << "Your interest rate is set to " << interest << endl;
@@ -302,14 +363,14 @@ class highInterestSavings : public savingsAccount{
         double hiInterest;
     public:
         void SetMinBalance();
-        void SetBalance();
+        void SetBalance() override;
         void SetInterest();
-        void PrintDetails() const override;
+        void PrintDetails();
         void Setup() override;
         highInterestSavings();
 };
 
-void highInterestSavings::PrintDetails() const{
+void highInterestSavings::PrintDetails(){
     cout << "The name on your account is " << name << endl;
     cout << "Your account number is " << accountNumber << endl;
     cout << "Your interest rate is set to " << hiInterest << endl;
@@ -366,13 +427,50 @@ class certificateOfDeposit : public bankAccount{
         int monthsOfMaturity;
         int currentMonth;
     public:
+        void SetName();
+        void SetAccountNum();
+        void SetBalance();
+        void Deposit() override;
+        void Withdraw() override;
         void SetInterest();
         void SetCurrentMonth();
         void SetMonthsOfMaturity();
         void Setup() override;
-        void PrintDetails() const override;
+        void PrintDetails();
         certificateOfDeposit();
 };
+
+void certificateOfDeposit::SetName(){
+    cout << "Enter a name for the account: ";
+    cin >> name;
+}
+
+void certificateOfDeposit::SetAccountNum(){
+    cout << "Enter a number for the account: ";
+    cin >> accountNumber;
+}
+
+void certificateOfDeposit::SetBalance(){
+    cout << "Enter a balance for the Account: ";
+    cin >> balance;
+}
+
+void certificateOfDeposit::Deposit(){
+    double money;
+    cout << "Enter amount to be deposited into account: $";
+    cin >> money;
+    balance += money;
+    cout << "New account balance is $" << balance << endl;
+}
+
+void certificateOfDeposit::Withdraw(){
+    double money;
+    cout << "Enter amount to be withdrawn: $"; 
+    cin >> money;
+    balance -= money;
+    cout << "New Balance is $" << balance << endl;
+}
+
 
 void certificateOfDeposit::Setup(){
     cout << "Setting up Certificate of Deposit...\n";
@@ -385,7 +483,7 @@ void certificateOfDeposit::Setup(){
 }
 
 
-void certificateOfDeposit::PrintDetails() const{
+void certificateOfDeposit::PrintDetails(){
     cout << "Interest is " << interest << endl;
     cout << "Current month is " << currentMonth << endl;
     cout << "Months of maturity is " << monthsOfMaturity << endl;
@@ -417,19 +515,23 @@ void certificateOfDeposit::SetMonthsOfMaturity(){
 }
 
 int main(){
+
     //Declaring test variables of different classes
-    bankAccount b1;
-    checkingAccount b2;
-    highInterestChecking b3;
-    highInterestSavings b4;
-    certificateOfDeposit b5;
+    savingsAccount b1;
+    noServiceChargeChecking b2;
+    serviceChargeChecking b3;
+    highInterestChecking b4;
+    highInterestSavings b5;
+    certificateOfDeposit b6;
 
     //creates an array of pointers which point to addresses of the test variables
-    array<bankAccount*, 5> accounts { &b1, &b2, &b3, &b4, &b5};
+    array<bankAccount*, 6> accounts { &b1, &b2, &b3, &b4, &b5, &b6};
     //loops through array and points to specific functions facilitates use of virtual functions
     for (bankAccount* account : accounts) {
         //accesses member functions of account
         account->Setup();
+        account->Deposit();
+        account->Withdraw();
         account->PrintDetails();
         cout << endl; 
     }

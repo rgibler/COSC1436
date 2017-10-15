@@ -43,7 +43,6 @@ class checkingAccount : public bankAccount{
         virtual void WriteCheck() = 0;
 };
 
-
 //inherits checking account members
 class serviceChargeChecking : public checkingAccount{
     protected:

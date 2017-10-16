@@ -9,7 +9,7 @@ struct LogStream
 {
     template<typename T> LogStream& operator<<(const T& mValue)
     {
-        std::cout << mValue;
+        cout << mValue;
         outfile << mValue;
     }
 };

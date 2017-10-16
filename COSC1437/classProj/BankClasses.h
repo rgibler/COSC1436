@@ -1,7 +1,20 @@
 #include<iostream>
 #include<array>
 #include<random>
+#include<fstream>
 using namespace std;
+
+ofstream outfile ("proj.txt");
+struct LogStream 
+{
+    template<typename T> LogStream& operator<<(const T& mValue)
+    {
+        std::cout << mValue;
+        outfile << mValue;
+    }
+};
+
+inline LogStream& lo() { static LogStream l; return l; }
 
 template <class T>
 T prompt(string msg) {
@@ -41,7 +54,10 @@ bankAccount::bankAccount(){
 
 class savingsAccount : public bankAccount{
     protected:
-        double balance;
+        double initialBal;
+        bool status;
+        double saveBalance;
+        double minBalance;
         int depositCount;
         double interest;
         double serviceCharge;
@@ -57,70 +73,70 @@ class savingsAccount : public bankAccount{
 
 void savingsAccount::MonthlyProc(){
     CalcInt();
-    balance -= serviceCharge;
+    saveBalance -= serviceCharge;
     totalSC += serviceCharge;
 }
 void savingsAccount::CalcInt(){
-    double monthlyInt = balance * (interest / 100);
+    double monthlyInt = saveBalance * (interest / 100);
     intAccrued += monthlyInt;
-    balance += monthlyInt;
+    saveBalance += monthlyInt;
 }
 void savingsAccount::DisplayInfo(){
     MonthlyProc();
-    cout << "Savings Account #" << accountNumber << " Banking Summary\n\n";
-    cout << "Current Account balance is $" << balance << "\n";
-    cout << "Number of Deposits this month " << depositCount << "\n";
-    cout << "Number of Withdrawals this month " << withdrawalCount << "\n";
-    cout << "Account has aged " << month << " month(s).\n";
-    cout << "Total interest accrued since account creation is $" << intAccrued << "\n";
-    cout << "Total payed in service charges $" << totalSC << "\n";
-    cout << "\n\n";
+    lo() << "Savings Account #" << accountNumber << " Monthly Summary #" << month << "\n\n";
+    lo() << "Initial balance for the month was $" << initialBal << "\n";
+    lo() << "Current Account balance is $" << saveBalance << "\n";
+    lo() << "Number of Deposits this month " << depositCount << "\n";
+    lo() << "Number of Withdrawals this month " << withdrawalCount << "\n";
+    lo() << "Account has aged " << month << " month(s).\n";
+    lo() << "Total interest accrued since account creation is $" << intAccrued << "\n";
+    lo() << "Total payed in service charges $" << totalSC << "\n";
+    lo() << "\n\n";
     month++;
+    initialBal = saveBalance;
     depositCount = 0;
     withdrawalCount = 0;
 }
 
 void savingsAccount::Deposit(){
-    balance += prompt<double>("Please enter an amount to be deposited: $");
+    saveBalance += prompt<double>("Please enter an amount to be deposited: $");
     depositCount++;
+    if (saveBalance > 25)
+        status = true;
 }
 
 void savingsAccount::Withdraw(){
-    balance -= prompt<double>("Please enter an amount to be withdrawn: $");
-    withdrawalCount++;
-}
-
-savingsAccount::savingsAccount(double amount = 0.0, double monthlyInt = 10, double monthlySC = 50){
-    balance = amount;
-    depositCount = 0;
-    withdrawalCount = 0;
-    interest = monthlyInt;
-    serviceCharge = monthlySC;
-}
-
-class minBalSavingsAccount : public savingsAccount{
-    protected:
-        double minBalance;
-    public:
-        void Withdraw() override;
-        minBalSavingsAccount(double min);
-};
-
-void minBalSavingsAccount::Withdraw(){
-    if (balance > minBalance){
-        balance -= prompt<double>("Please enter an amount to be withdrawn: $");
+    if (saveBalance > minBalance){
+        saveBalance -= prompt<double>("Please enter an amount to be withdrawn: $");
     }
     else{
         cout << "Cannot make withdrawals while account balance is below minimum balance!\n\n";
     }
+    if (saveBalance < 25){
+        status = false;
+        cout << "Account is now inactive because the current account balance of $" << saveBalance;
+        cout << " is below the minimum balance of $25.\n\n";
+    }
+    withdrawalCount++;
+    if (withdrawalCount > 4)
+        serviceCharge = withdrawalCount - 3;
 }
-minBalSavingsAccount::minBalSavingsAccount(double min = 25){
+
+savingsAccount::savingsAccount(double amount = 0.0, double monthlyInt = 10, double min = 25){
+    initialBal = amount;
+    saveBalance = amount;
     minBalance = min;
+    status = true;
+    depositCount = 0;
+    withdrawalCount = 0;
+    interest = monthlyInt;
+    serviceCharge = 0;
 }
 
 class checkingAccount : public bankAccount{
     protected:
-        double balance;
+        double checkBalance;
+        double initialBal;
         int depositCount;
         int withdrawalCount;
         double interest;
@@ -136,40 +152,50 @@ class checkingAccount : public bankAccount{
 
 void checkingAccount::MonthlyProc(){
     CalcInt();
-    balance -= serviceCharge;
-    totalSC += serviceCharge;
+    checkBalance -= (serviceCharge + 0.1 * withdrawalCount);
+    totalSC += (serviceCharge + 0.1 * withdrawalCount) ;
 }
 void checkingAccount::CalcInt(){
-    double monthlyInt = balance * (interest / 100);
+    double monthlyInt = checkBalance * (interest / 100);
     intAccrued += monthlyInt;
-    balance += monthlyInt;
+    checkBalance += monthlyInt;
 }
 void checkingAccount::DisplayInfo(){
-    cout << "Checking Account #" << accountNumber << " Banking Summary\n\n";
-    cout << "Current Account balance is $" << balance << "\n";
-    cout << "Number of Deposits this month " << depositCount << "\n";
-    cout << "Number of Withdrawals this month " << withdrawalCount << "\n";
-    cout << "Account has aged " << month << " month(s).\n";
-    cout << "Total interest accrued: $" << intAccrued << "\n";
-    cout << "Total paid in service charges: $" << totalSC << "\n";
-    cout << "\n\n";
+    MonthlyProc();
+    lo() << "Checking Account #" << accountNumber << " Monthly Summary #" << month << "\n\n";
+    lo() << "Initial Account Balance was $" << initialBal << "\n";
+    lo() << "Current Account balance is $" << checkBalance << "\n";
+    lo() << "Number of Deposits this month " << depositCount << "\n";
+    lo() << "Number of Withdrawals this month " << withdrawalCount << "\n";
+    lo() << "Account has aged " << month << " month(s).\n";
+    lo() << "Total interest accrued: $" << intAccrued << "\n";
+    lo() << "Total paid in service charges: $" << totalSC << "\n";
+    lo() << "\n\n";
     month++;
     depositCount = 0;
     withdrawalCount = 0;
+    initialBal = checkBalance;
 }
 
 void checkingAccount::Deposit(){
-    balance += prompt<double>("Please enter an amount to be deposited: $");
+    checkBalance += prompt<double>("Please enter an amount to be deposited: $");
     depositCount++;
 }
 
 void checkingAccount::Withdraw(){
-    balance -= prompt<double>("Please enter an amount to be withdrawn: $");
+    double TempBalance = prompt<double>("Please enter an amount to be withdrawn: $");
+    if (checkBalance - TempBalance < 0){
+        checkBalance -= 25;
+    }
+    else{
+        checkBalance -= TempBalance;
+    }
     withdrawalCount++;
 }
 
-checkingAccount::checkingAccount(double amount = 0.0, double monthlyInt = 10, double monthlySC = 50){
-    balance = amount;
+checkingAccount::checkingAccount(double amount = 0.0, double monthlyInt = 10, double monthlySC = 5){
+    initialBal = amount;
+    checkBalance = amount;
     depositCount = 0;
     withdrawalCount = 0;
     interest = monthlyInt;

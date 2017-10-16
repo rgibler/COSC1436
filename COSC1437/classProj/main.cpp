@@ -1,5 +1,6 @@
 #include<iostream>
 #include<string>
+#include<fstream>
 #include"BankingIO.h"
 using namespace std;
 
@@ -8,7 +9,7 @@ int PromptUsr();
 void UsrDecision(bankAccount*);
 
 int main(){
-    minBalSavingsAccount a;
-    UsrDecision(&a);
+    Accounts a;
+    UsrDecision(a);
 }
 

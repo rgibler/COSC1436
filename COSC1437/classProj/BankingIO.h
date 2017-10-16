@@ -3,6 +3,16 @@
 #include"BankClasses.h"
 using namespace std;
 
+struct Accounts{
+    savingsAccount saveAccount;
+    checkingAccount checkAccount;
+    void DisplayAccountDeets();
+};
+
+void Accounts::DisplayAccountDeets(){
+    saveAccount.DisplayInfo();
+    checkAccount.DisplayInfo();
+}
 
 int PromptUsr(){
     cout << "******** BANK ACCOUNT MENU ********\n\n\n";
@@ -20,39 +30,25 @@ int PromptUsr(){
     return usrChoice;
 }
 
-void UsrDecision(bankAccount* account){
-    savingsAccount* savingPtr = dynamic_cast<savingsAccount*> (account);
-    checkingAccount* checkingPtr = dynamic_cast<checkingAccount*> (account);
+void UsrDecision(Accounts account){
     int usrChoice = 0;
     do{
         usrChoice = PromptUsr();
         switch(usrChoice){
         case 1:
-            if (savingPtr)
-                account -> Deposit();
-            else
-                cout << "Account not a savings account\n\n";
+                account.saveAccount.Deposit();
             break;
         case 2:
-            if (checkingPtr)
-                account -> Deposit();
-            else
-                cout << "Account not a checking account\n\n";
+                account.checkAccount.Deposit();
             break;
         case 3:
-            if (savingPtr)
-                account -> Withdraw();
-            else
-                cout << "Account not a savings account\n\n";
+                account.saveAccount.Withdraw();
             break;
         case 4:
-            if (checkingPtr)
-                account -> Withdraw();
-            else
-                cout << "Account not a checking account\n\n";
+                account.checkAccount.Withdraw();
             break;
         case 5:
-            account -> DisplayInfo();
+            account.DisplayAccountDeets();
             break;
         default:
             cout << "Exiting Program...\n";
